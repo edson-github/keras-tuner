@@ -182,14 +182,13 @@ class Trial(stateful.Stateful):
             )
         else:
             score = None
-        proto = protos.get_proto().Trial(
+        return protos.get_proto().Trial(
             trial_id=self.trial_id,
             hyperparameters=self.hyperparameters.to_proto(),
             score=score,
             status=TrialStatus.to_proto(self.status),
             metrics=self.metrics.to_proto(),
         )
-        return proto
 
     @classmethod
     def from_proto(cls, proto):

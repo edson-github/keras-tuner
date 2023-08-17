@@ -102,7 +102,7 @@ class BaseTuner(stateful.Stateful):
             )
         self.logger = logger
 
-        if len(kwargs) > 0:
+        if kwargs:
             raise ValueError(
                 f"Unrecognized arguments {list(kwargs.keys())} "
                 "for `BaseTuner.__init__()`."
@@ -361,8 +361,7 @@ class BaseTuner(stateful.Stateful):
             List of trained models sorted from the best to the worst.
         """
         best_trials = self.oracle.get_best_trials(num_models)
-        models = [self.load_model(trial) for trial in best_trials]
-        return models
+        return [self.load_model(trial) for trial in best_trials]
 
     def get_best_hyperparameters(self, num_trials=1):
         """Returns the best hyperparameters, as determined by the objective.

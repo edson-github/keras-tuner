@@ -196,8 +196,7 @@ class HyperImageAugment(hypermodel.HyperModel):
         else:
             x = self._build_fixedaug_layers(x, hp)
 
-        model = keras.Model(inputs, x, name=self.model_name)
-        return model
+        return keras.Model(inputs, x, name=self.model_name)
 
     def _build_randaug_layers(self, inputs, hp):
         augment_layers = hp.Int(
