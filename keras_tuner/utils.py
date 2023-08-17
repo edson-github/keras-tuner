@@ -90,6 +90,4 @@ def deserialize_keras_object(config, module_objects=None, custom_objects=None):
 def to_list(values):
     if isinstance(values, list):
         return values
-    if isinstance(values, tuple):
-        return list(values)
-    return [values]
+    return list(values) if isinstance(values, tuple) else [values]

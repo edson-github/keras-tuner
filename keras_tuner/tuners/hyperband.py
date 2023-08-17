@@ -203,22 +203,15 @@ class HyperbandOracle(oracle_module.Oracle):
                     )
                     return {"status": "RUNNING", "values": values}
 
-        # This is reached if no trials from current brackets can be run.
-
-        # Max sweeps has been reached, no more brackets should be created.
         if (
             self._current_bracket == 0
             and self._current_iteration + 1 == self.hyperband_iterations
         ):
             # Stop creating new brackets, but wait to complete other brackets.
-            if self.ongoing_trials:
-                return {"status": "IDLE"}
-            return {"status": "STOPPED"}
-        # Create a new bracket.
-        else:
-            self._increment_bracket_num()
-            self._start_new_bracket()
-            return self._random_trial(trial_id, self._brackets[-1])
+            return {"status": "IDLE"} if self.ongoing_trials else {"status": "STOPPED"}
+        self._increment_bracket_num()
+        self._start_new_bracket()
+        return self._random_trial(trial_id, self._brackets[-1])
 
     def _start_new_bracket(self):
         rounds = []
@@ -257,8 +250,7 @@ class HyperbandOracle(oracle_module.Oracle):
     def _random_trial(self, trial_id, bracket):
         bracket_num = bracket["bracket_num"]
         rounds = bracket["rounds"]
-        values = self._random_values()
-        if values:
+        if values := self._random_values():
             values["tuner/epochs"] = self._get_epochs(bracket_num, 0)
             values["tuner/initial_epoch"] = 0
             values["tuner/bracket"] = self._current_bracket

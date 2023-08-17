@@ -384,9 +384,10 @@ def test_oracle_reload_ongoing_trials_to_retry(tmp_path):
     trial_3 = oracle.create_trial(tuner_id="a")
     trial_4 = oracle.create_trial(tuner_id="b")
 
-    assert set([trial_3.trial_id, trial_4.trial_id]) == set(
-        [trial_1.trial_id, trial_2.trial_id]
-    )
+    assert {trial_3.trial_id, trial_4.trial_id} == {
+        trial_1.trial_id,
+        trial_2.trial_id,
+    }
 
 
 def test_get_best_trial_with_nans(tmp_path):
@@ -394,7 +395,7 @@ def test_get_best_trial_with_nans(tmp_path):
         directory=tmp_path, objective="val_loss", max_retries_per_trial=1
     )
 
-    for i in range(10):
+    for _ in range(10):
         trial = oracle.create_trial(tuner_id="a")
         oracle.update_trial(trial.trial_id, {"val_loss": np.random.rand()})
         trial.status = trial_module.TrialStatus.COMPLETED
@@ -418,7 +419,7 @@ def test_overwrite_false_resume(tmp_path):
     oracle = OracleStub(
         directory=tmp_path, objective="val_loss", max_retries_per_trial=1
     )
-    for i in range(10):
+    for _ in range(10):
         trial = oracle.create_trial(tuner_id="a")
         oracle.update_trial(trial.trial_id, {"val_loss": np.random.rand()})
         trial.status = trial_module.TrialStatus.COMPLETED

@@ -45,7 +45,7 @@ class Boolean(hyperparameter.HyperParameter):
         return (True, False)
 
     def prob_to_value(self, prob):
-        return bool(prob >= 0.5)
+        return prob >= 0.5
 
     def value_to_prob(self, value):
         # Center the value in its probability bucket.

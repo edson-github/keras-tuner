@@ -103,12 +103,12 @@ class MetricHistory:
             self._observations[step] = MetricObservation(value, step=step)
 
     def get_best_value(self):
-        values = [obs.mean() for obs in self._observations.values()]
-        if not values:
+        if values := [obs.mean() for obs in self._observations.values()]:
+            return (
+                np.nanmin(values) if self.direction == "min" else np.nanmax(values)
+            )
+        else:
             return None
-        return (
-            np.nanmin(values) if self.direction == "min" else np.nanmax(values)
-        )
 
     def get_best_step(self):
         best_value = self.get_best_value()
@@ -142,20 +142,17 @@ class MetricHistory:
         )
 
     def get_last_value(self):
-        history = self.get_history()
-        if history:
+        if history := self.get_history():
             last_obs = history[-1]
             return last_obs.mean()
         else:
             return None
 
     def get_config(self):
-        config = {
+        return {
             "direction": self.direction,
             "observations": [obs.get_config() for obs in self.get_history()],
         }
-
-        return config
 
     @classmethod
     def from_config(cls, config):
@@ -226,8 +223,7 @@ class MetricsTracker:
         self.metrics[name].update(value, step=step)
         new_best = self.metrics[name].get_best_value()
 
-        improved = new_best != prev_best
-        return improved
+        return new_best != prev_best
 
     def get_history(self, name):
         self._assert_exists(name)

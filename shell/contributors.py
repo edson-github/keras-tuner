@@ -23,25 +23,25 @@ def main(directory):
     width = elem_per_line * (size + gap) + gap
     height = ((len(contributors) - 1) // elem_per_line + 1) * (size + gap) + gap
 
-    html = '<svg xmlns="http://www.w3.org/2000/svg" '
-    html += 'xmlns:xlink="http://www.w3.org/1999/xlink" '
+    html = (
+        '<svg xmlns="http://www.w3.org/2000/svg" '
+        + 'xmlns:xlink="http://www.w3.org/1999/xlink" '
+    )
     html += 'width="{width}" height="{height}">'.format(
         width=width, height=height
     )
 
-    defs = "<defs>"
-    defs += '<rect id="rect" width="36" height="36" rx="18"/>'
+    defs = "<defs>" + '<rect id="rect" width="36" height="36" rx="18"/>'
     defs += '<clipPath id="clip"> <use xlink:href="#rect"/> </clipPath> '
     defs += "</defs>"
 
     html += defs + "\n"
 
     for index, contributor in enumerate(contributors):
-        file_name = os.path.join(directory, str(index) + ".jpeg")
+        file_name = os.path.join(directory, f"{str(index)}.jpeg")
         response = requests.get(contributor["avatar_url"])
-        file = open(file_name, "wb")
-        file.write(response.content)
-        file.close()
+        with open(file_name, "wb") as file:
+            file.write(response.content)
         image = Image.open(file_name)
         image = image.resize((size, size))
         # image.convert('RGB').save(file_name)

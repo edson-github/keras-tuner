@@ -199,9 +199,7 @@ class HyperParameters:
             not active.
         """
         if self._exists(hp.name, hp.conditions):
-            if self.is_active(hp):
-                return self.values[hp.name]
-            return None  # Ensures inactive values are not relied on by user.
+            return self.values[hp.name] if self.is_active(hp) else None
         return self._register(hp)
 
     def _register(self, hyperparameter, overwrite=False):

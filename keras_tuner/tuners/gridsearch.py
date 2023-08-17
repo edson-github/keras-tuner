@@ -79,9 +79,7 @@ class LinkedList:
         """
         index = self._data_to_index[data]
         next_index = self._next_index[index]
-        if next_index is None:
-            return None
-        return self._memory[next_index]
+        return None if next_index is None else self._memory[next_index]
 
 
 @keras_tuner_export("keras_tuner.oracles.GridSearchOracle")
